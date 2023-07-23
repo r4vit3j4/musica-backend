@@ -2,7 +2,7 @@
   "name": "musica-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./build/src/index.js",
   "scripts": {
     "main": "./build/src/index.js",
     "start": "node ./build/src/index.js",
