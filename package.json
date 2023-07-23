@@ -2,12 +2,11 @@
   "name": "musica-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "./build/src/index.js",
+  "main": "index.js",
   "scripts": {
-    "main": "./build/src/index.js",
-    "start": "node ./build/src/index.js",
-    "dev": "pnpm build && pnpm start",
-    "build": "tsc"
+    "tsc": "tsc",
+    "build": "tsc",
+    "start": "node ./build/src/index.js"
   },
   "keywords": [],
   "author": "",
