@@ -45,42 +45,48 @@ const getTrack = async (req: Request, res: Response) => {
     const docSnap = await getDocs(q);
 
     return res.send(docSnap.docs[0].data());
-  } catch (err) {
+  } catch (err: any) {
     return res.status(400).send(err.message);
   }
 };
 
 const postTrack = async (req: Request, res: Response) => {
   try {
-    const storageRef = ref(storage, `tracks/${req.file.originalname}`);
+    if (req.file) {
+      const storageRef = ref(storage, `tracks/${req.file.originalname}`);
 
-    const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, {
-      contentType: req.file.mimetype,
-    });
+      const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, {
+        contentType: req.file.mimetype,
+      });
 
-    const downloadURL = await getDownloadURL(snapshot.ref);
+      const downloadURL = await getDownloadURL(snapshot.ref);
 
-    const coll = collection(db, "tracks");
-    const collSnap = await getCountFromServer(coll);
+      const coll = collection(db, "tracks");
+      const collSnap = await getCountFromServer(coll);
 
-    const docRef = await addDoc(collection(db, "tracks"), {
-      id: collSnap.data().count + 1,
-      trackName: req.body.trackName,
-      artist: req.body.artist,
-      trackUrl: downloadURL,
-    });
+      const docRef = await addDoc(collection(db, "tracks"), {
+        id: collSnap.data().count + 1,
+        trackName: req.body.trackName,
+        artist: req.body.artist,
+        trackUrl: downloadURL,
+      });
 
-    const docSnap = await getDoc(docRef);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      return res.send(docSnap.data());
+      if (docSnap.exists()) {
+        return res.send(docSnap.data());
+      } else {
+        return res.send({
+          status: "failed",
+          message: "No document exists",
+        });
+      }
     } else {
-      return res.send({
-        status: "failed",
-        message: "No document exists",
+      res.status(400).send({
+        error: "File Error",
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     return res.status(400).send(error.message);
   }
 };
