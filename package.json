@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "main": "./build/src/index.js",
     "start": "node ./build/src/index.js",
     "dev": "pnpm build && pnpm start",
     "build": "tsc"
