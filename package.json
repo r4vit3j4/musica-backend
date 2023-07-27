@@ -6,7 +6,8 @@
   "scripts": {
     "tsc": "tsc",
     "build": "tsc && npx node-prune && npx modclean -n default:safe,default:caution -r",
-    "start": "node ./build/index.js"
+    "start": "node ./build/index.js",
+    "dev": "tsc && node ./build/index.js"
   },
   "keywords": [],
   "author": "",

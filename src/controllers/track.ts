@@ -27,24 +27,43 @@ const db = getFirestore();
 
 const getTrack = async (req: Request, res: Response) => {
   try {
-    const coll = collection(db, "tracks");
-    const collSnap = await getCountFromServer(coll);
+    const tracksCollection = collection(db, "tracks");
+    const artCollection = collection(db, "artworks");
+
+    const tracksCollSnap = await getCountFromServer(tracksCollection);
+    const artCollSnap = await getCountFromServer(artCollection);
 
     const prevId = parseInt(req.params.prevSongId);
 
-    let randomId;
+    let randomTrackId;
 
     if (isNaN(prevId)) {
-      randomId = randomNumber(collSnap.data().count);
+      randomTrackId = randomNumber(tracksCollSnap.data().count);
     } else {
-      randomId = randomNumber(collSnap.data().count, prevId);
+      randomTrackId = randomNumber(tracksCollSnap.data().count, prevId);
     }
 
-    const q = query(coll, where("id", "==", randomId), limit(1));
+    const randomArtworkId = randomNumber(artCollSnap.data().count);
 
-    const docSnap = await getDocs(q);
+    const trackQuery = query(
+      tracksCollection,
+      where("id", "==", randomTrackId),
+      limit(1)
+    );
 
-    return res.send(docSnap.docs[0].data());
+    const artworkQuery = query(
+      artCollection,
+      where("id", "==", randomArtworkId),
+      limit(1)
+    );
+
+    const trackDocSnap = await getDocs(trackQuery);
+    const artworkDocSnap = await getDocs(artworkQuery);
+
+    return res.send({
+      ...trackDocSnap.docs[0].data(),
+      artworkUrl: artworkDocSnap.docs[0].data().artworkUrl,
+    });
   } catch (err: any) {
     return res.status(400).send(err.message);
   }

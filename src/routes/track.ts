@@ -8,7 +8,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
 });
 
-router.get("/track/:prevSongId", trackController.getTrack);
+router.get(["/track", "/track/:prevSongId"], trackController.getTrack);
 router.post("/track", upload.single("track"), trackController.postTrack);
 
 export default router;
